@@ -13,7 +13,7 @@ build:
   services:
     - docker:dind
   before_script:
-    - cat $DOCKER_REGISTRY/$DOCKER_USER
+    - echo $DOCKER_REGISTRY/$DOCKER_USER
     - echo "$DOCKER_PASS" | docker login $DOCKER_REGISTRY --username $DOCKER_USER --password-stdin
   script:
     - cd mock-endpoints/
