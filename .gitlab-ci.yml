@@ -1,6 +1,6 @@
 stages:
   - build
-  #- staging
+  - staging
 
 variables:
   APP_IMAGE: franklinribe/node-app
@@ -13,7 +13,6 @@ build:
   services:
     - docker:dind
   before_script:
-    - echo $DOCKER_REGISTRY/$DOCKER_USER
     - echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
   script:
     - cd mock-endpoints/
@@ -21,25 +20,29 @@ build:
     - docker push $APP_IMAGE:latest
     - docker push $APP_IMAGE:$CI_COMMIT_SHA
 
-#.deploy_default: &deploy_default
-#   - kubectl --namespace=mlr-logo delete deployment/mlr-logo-app
-#   - kubectl --namespace=mlr-logo apply -f k8s/django/django-mlr-logo-deploy.yml
-#
-#deploy:staging:
-#  tags:
-#    - kubernetes
-#  variables:
-#    APP_URL: mlr-logo.ikg.staging.interos.io
-#  stage: staging
-#  image: weberainc/kubectl:latest
-#  environment:
-#    name: staging
-#    url: https://${APP_URL}
-#  script:
-#    - *deploy_default
-#  allow_failure: false
-#  needs:
-#    - build
-#  rules:
-#    - if: '$CI_COMMIT_REF_NAME == "master"'
-#      when: always
+.deploy_default: &deploy_default
+  - kustomize build k8s/envs/staging | kubectl apply -f -
+
+deploy:staging:
+  #before_script:
+  #  - apt-get update && apt-get install -y apt-transport-https ca-certificates curl
+  #  - curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  #  - echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+  #  - apt-get update && sudo apt-get install -y kubectl
+  tags:
+    - kubernetes
+  variables:
+    APP_URL: node-app.staging.techchurch.com.br
+  stage: staging
+  image: k8s.gcr.io/kustomize/kustomize:v3.8.7
+  environment:
+    name: staging
+    url: https://${APP_URL}
+  script:
+    - *deploy_default
+  allow_failure: false
+  needs:
+    - build
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+      when: always
