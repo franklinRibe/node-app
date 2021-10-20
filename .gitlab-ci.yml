@@ -30,7 +30,7 @@ deploy:staging:
   #  - echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
   #  - apt-get update && sudo apt-get install -y kubectl
   tags:
-    - kubernetes
+    - default
   variables:
     APP_URL: node-app.staging.techchurch.com.br
   stage: staging
