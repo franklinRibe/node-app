@@ -21,7 +21,7 @@ build:
     - docker push $APP_IMAGE:$CI_COMMIT_SHA
 
 .deploy_default: &deploy_default
-  - ./kustomize build k8s/envs/staging 
+  - kustomize build k8s/envs/staging
 
 deploy:staging:
   #before_script:
@@ -39,6 +39,7 @@ deploy:staging:
     name: staging
     url: https://${APP_URL}
   script:
+    - cp kustomize /usr/bin/
     - *deploy_default
   allow_failure: false
   needs:
