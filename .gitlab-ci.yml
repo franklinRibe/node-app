@@ -1,0 +1,44 @@
+stages:
+  - build
+  #- staging
+
+variables:
+  APP_IMAGE: 913617820371.dkr.ecr.us-east-1.amazonaws.com/mlr-app
+
+build:
+  tags:
+    - kubernetes
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - cat $DOCKER_PASS | docker login --username fribeiro --password-stdin
+  script:
+    - cd mock-endpoints/
+    - docker build --cache-from $APP_IMAGE:latest -t $APP_IMAGE:$CI_COMMIT_SHA -t $APP_IMAGE:latest -f Dockerfile .
+    - docker push $APP_IMAGE:latest
+    - docker push $APP_IMAGE:$CI_COMMIT_SHA
+
+#.deploy_default: &deploy_default
+#   - kubectl --namespace=mlr-logo delete deployment/mlr-logo-app
+#   - kubectl --namespace=mlr-logo apply -f k8s/django/django-mlr-logo-deploy.yml
+#
+#deploy:staging:
+#  tags:
+#    - kubernetes
+#  variables:
+#    APP_URL: mlr-logo.ikg.staging.interos.io
+#  stage: staging
+#  image: weberainc/kubectl:latest
+#  environment:
+#    name: staging
+#    url: https://${APP_URL}
+#  script:
+#    - *deploy_default
+#  allow_failure: false
+#  needs:
+#    - build
+#  rules:
+#    - if: '$CI_COMMIT_REF_NAME == "master"'
+#      when: always
