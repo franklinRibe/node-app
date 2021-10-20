@@ -3,7 +3,7 @@ stages:
   #- staging
 
 variables:
-  APP_IMAGE: 913617820371.dkr.ecr.us-east-1.amazonaws.com/mlr-app
+  APP_IMAGE: franklinribe/node-app
 
 build:
   tags:
@@ -12,8 +12,8 @@ build:
   image: docker:latest
   services:
     - docker:dind
-  before_script:
-    - cat $DOCKER_PASS | docker login --username fribeiro --password-stdin
+  #before_script:
+  #  - cat $DOCKER_PASS | docker login --username fribeiro --password-stdin
   script:
     - cd mock-endpoints/
     - docker build --cache-from $APP_IMAGE:latest -t $APP_IMAGE:$CI_COMMIT_SHA -t $APP_IMAGE:latest -f Dockerfile .
