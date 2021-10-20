@@ -12,8 +12,8 @@ build:
   image: docker:latest
   services:
     - docker:dind
-  #before_script:
-  #  - cat $DOCKER_PASS | docker login --username fribeiro --password-stdin
+  before_script:
+    - echo "$DOCKER_PASS" | docker login $DOCKER_REGISTRY --username $DOCKER_USER --password-stdin
   script:
     - cd mock-endpoints/
     - docker build --cache-from $APP_IMAGE:latest -t $APP_IMAGE:$CI_COMMIT_SHA -t $APP_IMAGE:latest -f Dockerfile .
