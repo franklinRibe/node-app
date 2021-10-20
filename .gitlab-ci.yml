@@ -7,7 +7,7 @@ variables:
 
 build:
   tags:
-    - default
+    - kubernetes
   stage: build
   image: docker:latest
   services:
