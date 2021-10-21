@@ -2,6 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: staging-app-node
+  annotations:
+    meta.helm.sh/release-name: ingress-nginx
 spec:
   rules:
   - host: node-app.staging.example.com
