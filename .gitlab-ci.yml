@@ -4,6 +4,7 @@ stages:
 
 variables:
   APP_IMAGE: franklinribe/node-app
+  PROD_VERSION: "1.0"
 
 build:
   tags:
@@ -16,7 +17,7 @@ build:
     - echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
   script:
     - cd mock-endpoints/
-    - docker build --cache-from $APP_IMAGE:latest -t $APP_IMAGE:$CI_COMMIT_SHA -t $APP_IMAGE:latest -f Dockerfile .
+    - docker build --cache-from $APP_IMAGE:latest -t $APP_IMAGE:$CI_COMMIT_SHA -t $APP_IMAGE:latest -t $APP_IMAGE:$PROD_VERSION -f Dockerfile .
     - docker push $APP_IMAGE:latest
     - docker push $APP_IMAGE:$CI_COMMIT_SHA
 
