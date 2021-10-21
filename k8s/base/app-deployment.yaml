@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: node-app
-        image: node-app:latest
+        image: franklinribe/node-app
         resources:
           requests:
             cpu: 100m
