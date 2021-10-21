@@ -42,7 +42,7 @@ deploy:
   script:
     - cp kustomize /usr/bin/
     - kustomize --help
-    - *deploy_default
+    #- *deploy_default
   allow_failure: false
   needs:
     - build
