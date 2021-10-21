@@ -1,6 +1,6 @@
 stages:
   - build
-  - staging
+  - deploy
 
 variables:
   APP_IMAGE: franklinribe/node-app
@@ -35,7 +35,7 @@ deploy:staging:
   variables:
     APP_URL: node-app.staging.techchurch.com.br
     ENV: staging
-  stage: staging
+  stage: deploy
   image: ubuntu:latest
   environment:
     name: staging
@@ -55,7 +55,7 @@ deploy:prod:
   variables:
     APP_URL: node-app.techchurch.com.br
     ENV: prod
-  stage: prod
+  stage: deploy
   image: ubuntu:latest
   environment:
     name: production
@@ -75,7 +75,7 @@ deploy:qa:
   variables:
     APP_URL: node-app.qa.techchurch.com.br
     ENV: qa
-  stage: qa
+  stage: deploy
   image: ubuntu:latest
   environment:
     name: qa
