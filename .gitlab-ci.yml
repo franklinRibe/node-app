@@ -20,6 +20,7 @@ build:
     - docker build --cache-from $APP_IMAGE:latest -t $APP_IMAGE:$CI_COMMIT_SHA -t $APP_IMAGE:latest -t $APP_IMAGE:$PROD_VERSION -f Dockerfile .
     - docker push $APP_IMAGE:latest
     - docker push $APP_IMAGE:$CI_COMMIT_SHA
+    - docker push $APP_IMAGE:$PROD_VERSION
 
 .deploy_default: &deploy_default
     - apt-get update && apt-get install -y apt-transport-https ca-certificates curl
