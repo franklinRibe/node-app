@@ -20,10 +20,11 @@ build:
     - docker push $APP_IMAGE:latest
     - docker push $APP_IMAGE:$CI_COMMIT_SHA
 
-.deploy_default: &deploy_default
+#.deploy_default: &deploy_default
   - kustomize build k8s/envs/staging
 
-deploy:staging:
+deploy:
+#deploy:staging:
   #before_script:
   #  - apt-get update && apt-get install -y apt-transport-https ca-certificates curl
   #  - curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
@@ -40,6 +41,7 @@ deploy:staging:
     url: https://${APP_URL}
   script:
     - cp kustomize /usr/bin/
+    - kustomize --help
     - *deploy_default
   allow_failure: false
   needs:
