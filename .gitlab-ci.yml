@@ -21,24 +21,64 @@ build:
     - docker push $APP_IMAGE:$CI_COMMIT_SHA
 
 .deploy_default: &deploy_default
-  - kustomize build k8s/envs/staging | kubectl apply -f -
-
-deploy:staging:
-  before_script:
     - apt-get update && apt-get install -y apt-transport-https ca-certificates curl
     - curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
     - echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list
     - apt-get update && apt-get install -y kubectl
     - curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
     - mv kustomize /usr/bin
+    - kustomize build k8s/envs/$ENV | kubectl apply -f -
+
+deploy:staging:
   tags:
     - default
   variables:
     APP_URL: node-app.staging.techchurch.com.br
+    ENV: staging
   stage: staging
   image: ubuntu:latest
   environment:
     name: staging
+    url: https://${APP_URL}
+  script:
+    - *deploy_default
+  allow_failure: false
+  needs:
+    - build
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+      when: manual
+
+deploy:prod:
+  tags:
+    - default
+  variables:
+    APP_URL: node-app.techchurch.com.br
+    ENV: prod
+  stage: prod
+  image: ubuntu:latest
+  environment:
+    name: production
+    url: https://${APP_URL}
+  script:
+    - *deploy_default
+  allow_failure: false
+  needs:
+    - build
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
+      when: manual
+
+deploy:qa:
+  tags:
+    - default
+  variables:
+    APP_URL: node-app.qa.techchurch.com.br
+    ENV: qa
+  stage: qa
+  image: ubuntu:latest
+  environment:
+    name: qa
     url: https://${APP_URL}
   script:
     - *deploy_default
