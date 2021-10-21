@@ -35,12 +35,11 @@ deploy:
   variables:
     APP_URL: node-app.staging.techchurch.com.br
   stage: staging
-  image: k8s.gcr.io/kustomize/kustomize:v3.8.7
+  image: line/kubectl-kustomize:1.18.8-3.8.1
   environment:
     name: staging
     url: https://${APP_URL}
   script:
-    - cp kustomize /usr/bin/
     - kustomize --help
     #- *deploy_default
   allow_failure: false
