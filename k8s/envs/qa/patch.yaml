@@ -9,4 +9,4 @@ spec:
     spec:
       containers:
       - name: node-app
-        image: node-app:qa
+        image: node-app
