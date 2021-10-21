@@ -25,22 +25,23 @@ build:
 
 deploy:
 #deploy:staging:
-  #before_script:
-  #  - apt-get update && apt-get install -y apt-transport-https ca-certificates curl
-  #  - curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-  #  - echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-  #  - apt-get update && sudo apt-get install -y kubectl
+  before_script:
+    - apt-get update && apt-get install -y apt-transport-https ca-certificates curl
+    - curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    - echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    - apt-get update && sudo apt-get install -y kubectl
   tags:
     - default
   variables:
     APP_URL: node-app.staging.techchurch.com.br
   stage: staging
-  image: line/kubectl-kustomize:1.18.8-3.8.1
+  image: ubuntu:latest
   environment:
     name: staging
     url: https://${APP_URL}
   script:
-    - kustomize --help
+    - kubectl --version
+    #- kustomize --help
     #- *deploy_default
   allow_failure: false
   needs:
